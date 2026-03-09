@@ -1,192 +1,167 @@
-# Cali Docker Lab
+# 🏙️ Cali Container City Lab
 
-Este laboratorio consiste en que cada estudiante agregue su propio servicio al repositorio, lo construya como imagen Docker y lo publique en Docker Hub.
+## 📋 Información del Proyecto
+Este es el repositorio del equipo para el laboratorio de Docker "Cali Container City".
 
-## 1. Clonar el repositorio
+**Líder del equipo:** [Tu nombre aquí]  
+**Repositorio:** [URL del repositorio aquí]
 
+---
+
+## 🎯 Objetivo del Laboratorio
+Cada estudiante diseñará y construirá su propia imagen Docker, la publicará en Docker Hub o GitHub Packages, y ejecutará un contenedor desde esa imagen. Los contenedores vivirán en "barrios" (redes Docker) y registrarán su actividad en el volumen compartido "La Biblioteca del Pueblo".
+
+---
+
+## 📁 Estructura del Repositorio
+```
+/
+├── README.md                    # Este archivo
+├── GUIA_ESTUDIANTES.md          # Guía paso a paso para estudiantes
+├── .gitignore
+├── students/
+│   ├── ejemplo-python/          # Ejemplo con Flask
+│   │   ├── Dockerfile
+│   │   ├── app.py
+│   │   └── requirements.txt
+│   ├── ejemplo-nodejs/          # Ejemplo con Express
+│   │   ├── Dockerfile
+│   │   ├── server.js
+│   │   └── package.json
+│   └── ejemplo-nginx/           # Ejemplo con Nginx
+│       ├── Dockerfile
+│       └── index.html
+└── docs/
+    └── TROUBLESHOOTING.md       # Solución de problemas comunes
+```
+
+---
+
+## 🛠️ Configuración Inicial (SOLO LÍDER)
+
+### Paso 1: Crear las redes Docker (barrios de Cali)
 ```bash
-git clone https://github.com/juandasevilla/cali-docker-lab.git
-cd cali-docker-lab
+docker network create san-antonio
+docker network create granada
+docker network create ciudad-jardin
+docker network create san-fernando
 ```
 
----
-
-# 2. Crear una nueva rama
-
-Cada estudiante debe trabajar en **su propia rama**.
-
+### Paso 2: Crear el volumen compartido (La Biblioteca del Pueblo)
 ```bash
-git checkout -b feature-tu-nombre
+docker volume create biblioteca-del-pueblo
 ```
 
-Ejemplo:
-
+### Paso 3: Verificar la configuración
 ```bash
-git checkout -b feature/{tu nombre}-service
+# Ver redes creadas
+docker network ls
+
+# Ver volúmenes creados
+docker volume ls
 ```
 
----
-
-# 3. Crear tu carpeta de servicio
-
-Dentro del proyecto crea una carpeta con tu nombre.
-
-Ejemplo:
-
-```
-cali-docker-lab/
- ├─ juan-sevilla/
- │   ├─ app.py
- │   ├─ requirements.txt
- │   └─ Dockerfile
- ├─ alex-imbacuan/
- │   ├─ app.py
- │   ├─ requirements.txt
- │   └─ Dockerfil
-```
-
----
-
-# 4. Crear el archivo `app.py`
-
-Ejemplo usando Flask:
-
-```python
-from flask import Flask
-import os
-
-app = Flask(__name__)
-
-student = os.getenv("STUDENT_NAME", "Juan Sevilla")
-hood = os.getenv("BARRIO", "Cristobal Colon")
-
-@app.get("/")
-def home():
-    msg = f"Hola, I am {student} and I live in {hood}"
-    with open("/var/log/app/visitas.log", "a") as f:
-        f.write(msg + "\n")
-    return msg
-
-@app.get("/health")
-def health():
-    return {"ok": True}, 200
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
-```
-
----
-
-# 5. Crear `requirements.txt`
-
-```
-﻿blinker==1.9.0
-click==8.3.1
-colorama==0.4.6
-Flask==3.1.3
-itsdangerous==2.2.0
-Jinja2==3.1.6
-MarkupSafe==3.0.3
-Werkzeug==3.1.6
-```
-
----
-
-# 6. Crear el `Dockerfile`
-
-```dockerfile
-FROM python:3.12-alpine
-
-WORKDIR /app
-
-RUN addgroup -S app && adduser -S app -G app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app.py .
-
-RUN mkdir -p /var/log/app && chown -R app:app /var/log/app
-
-USER app
-
-EXPOSE 8080
-
-HEALTHCHECK --interval=10s --timeout=3s --retries=5 \
- CMD wget -qO- http://localhost:8080/health >/dev/null || exit 1
-
-CMD ["python","/app/app.py"]
-```
-
----
-
-# 7. Construir la imagen
-
-Desde la carpeta del proyecto:
-
+### Paso 4: Inicializar el repositorio Git
 ```bash
-docker build -t TU_USUARIO_DOCKERHUB/cali-service:v1 .
-```
-
-Ejemplo:
-
-```bash
-docker build -t sevilla85/cali-service:v1 .
-```
-
----
-
-# 8. Subir cambios al repositorio
-
-Agregar los archivos:
-
-```bash
+# Si aún no has inicializado el repo
+git init
 git add .
-git commit -m "Add service for <tu nombre>"
-git push origin feature/{tu nombre}-service
-```
+git commit -m "Initial commit: estructura base del proyecto"
 
-Luego crear un **Pull Request** en GitHub hacia la rama `main` solicitar un aprobador
-
----
-
-# 9. Subir la imagen a Docker Hub
-
-Iniciar sesión en Docker:
-
-```bash
-docker login
-```
-
-Subir la imagen:
-
-```bash
-docker push TU_USUARIO_DOCKERHUB/cali-service:v1
+# Conectar al repositorio remoto
+git remote add origin <URL_DEL_REPOSITORIO>
+git push -u origin main
 ```
 
 ---
 
-# 10. Ejecutar el contenedor
+## 👥 Asignación de Barrios
 
-Ejemplo de ejecución:
+| Estudiante | Barrio (Red) | Puerto Host | Tech Stack |
+|------------|--------------|-------------|------------|
+| [Nombre 1] | san-antonio  | 8081        | Python     |
+| [Nombre 2] | granada      | 8082        | Node.js    |
+| [Nombre 3] | ciudad-jardin| 8083        | Python     |
+| [Nombre 4] | san-fernando | 8084        | Nginx      |
 
+*(Edita esta tabla con los nombres de tu equipo)*
+
+---
+
+## 📊 Comandos Útiles para el Líder
+
+### Ver todos los contenedores del equipo
 ```bash
-docker run -d \
---name svc-tu-nombre \
---network san-antonio \
--e STUDENT_NAME="Tu Nombre" \
--e BARRIO="Tu Barrio" \
--v biblioteca-del-pueblo:/var/log/app \
--p 0:8080 TU_USUARIO_DOCKERHUB/cali-service:v1
+docker ps -a
+```
+
+### Ver logs de La Biblioteca del Pueblo
+```bash
+docker run --rm -v biblioteca-del-pueblo:/data alpine sh -c "cat /data/visitas.log"
+```
+
+### Ver últimas 20 visitas
+```bash
+docker run --rm -v biblioteca-del-pueblo:/data alpine sh -c "tail -n 20 /data/visitas.log"
+```
+
+### Limpiar todo (¡usar con precaución!)
+```bash
+# Detener todos los contenedores
+docker stop $(docker ps -q)
+
+# Eliminar todos los contenedores
+docker rm $(docker ps -aq)
+
+# Eliminar las redes
+docker network rm san-antonio granada ciudad-jardin san-fernando
+
+# Eliminar el volumen
+docker volume rm biblioteca-del-pueblo
 ```
 
 ---
 
-# Resultado esperado
+## 📝 Entregables del Equipo
+- [ ] Carpeta `/students/<nombre>/` de cada estudiante con Dockerfile, código y dependencias
+- [ ] Imagen Docker publicada de cada estudiante (Docker Hub o GitHub Packages)
+- [ ] Contenedor funcionando en su barrio asignado
+- [ ] Evidencia de escritura en La Biblioteca del Pueblo
+- [ ] Explicación del diseño elegido por cada estudiante
 
-Cada estudiante debe:
+---
 
-* Tener su **carpeta dentro del repositorio**
-* Hacer **Pull Request**
-* Publicar su **imagen en Docker Hub**
-* Ejecutar su **contenedor en la red del laboratorio**
+## 🔗 Enlaces Útiles
+- [Guía para Estudiantes](GUIA_ESTUDIANTES.md)
+- [Solución de Problemas](docs/TROUBLESHOOTING.md)
+- [Docker Hub](https://hub.docker.com/)
+- [GitHub Packages](https://github.com/features/packages)
+
+---
+
+## 📅 Flujo de Trabajo Git (Trunk-Based Development)
+
+1. Cada estudiante crea una rama desde `main`:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/nombre-estudiante
+   ```
+
+2. Trabaja en su carpeta `/students/<nombre>/`
+
+3. Hace commits pequeños y frecuentes:
+   ```bash
+   git add .
+   git commit -m "feat: agregar servicio de <nombre>"
+   ```
+
+4. Abre un Pull Request hacia `main`
+
+5. El líder revisa y aprueba el PR
+
+6. Se hace merge a `main`
+
+---
+
+**¡Buena suerte equipo! 🚀**
