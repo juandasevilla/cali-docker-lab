@@ -1,0 +1,13 @@
+{
+  "name": "cali-service",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Servicio para Cali Container City Lab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
