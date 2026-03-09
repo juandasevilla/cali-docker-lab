@@ -63,36 +63,38 @@ docker volume ls
 
 ### Paso 4: Inicializar el repositorio Git
 ```bash
-# Si aún no has inicializado el repo
-git init
-git add .
-git commit -m "Initial commit: estructura base del proyecto"
+#Clonar el repositorio por http 
+git clone https://github.com/juandasevilla/cali-docker-lab.git
 
-# Conectar al repositorio remoto
-git remote add origin <URL_DEL_REPOSITORIO>
-git push -u origin main
+# O clonar por ssh
+git clone git@github.com:juandasevilla/cali-docker-lab.git
 ```
 
 ---
 
 ## 👥 Asignación de Barrios
 
-| Estudiante | Barrio (Red) | Puerto Host | Tech Stack |
-|------------|--------------|-------------|------------|
-| [Nombre 1] | san-antonio  | 8081        | Python     |
-| [Nombre 2] | granada      | 8082        | Node.js    |
-| [Nombre 3] | ciudad-jardin| 8083        | Python     |
-| [Nombre 4] | san-fernando | 8084        | Nginx      |
-
-*(Edita esta tabla con los nombres de tu equipo)*
+| Estudiante     | Barrio (Red)   | Puerto Host | Tech Stack |
+|----------------|----------------|-------------|------------|
+| Pedro Parrales | el-troncal     | 8080        | Python     |
+| Juan Rojas     | brisas-alamos  | 8081        | Python     |
+| Juan Sevilla   | cristobal-colon| 8082        | Python     |
+| Alex Silva     | calipso        | 8083        | Python     |
+| Alex Imbacuan  | san-nicolas    | 8084        | Python     |
 
 ---
 
-## 📊 Comandos Útiles para el Líder
+## 📊 Comandos para hacer el laboratorio
 
-### Ver todos los contenedores del equipo
+### Clonar los repositorios de los compañeros
+Tener en cuenta cambiar el nombre-imagen y el puerto ir aumentando de 8080 a 8081 y asi, por cada uno
 ```bash
-docker ps -a
+docker run -d --name nombre-imagen -p 8080:8080 --network nombre-red-creada -v biblioteca-del-pueblo:/var/log/app usuario-companero/cali-service:v1
+```
+
+### Intentar acceder a otra imagen que se encuentra en la misma red
+```bash
+docker exec -it nombre-imagen-1 sh -c "wget -qO- http://nombre-imagen-2:8080/"
 ```
 
 ### Ver logs de La Biblioteca del Pueblo
@@ -119,15 +121,6 @@ docker network rm san-antonio granada ciudad-jardin san-fernando
 # Eliminar el volumen
 docker volume rm biblioteca-del-pueblo
 ```
-
----
-
-## 📝 Entregables del Equipo
-- [ ] Carpeta `/students/<nombre>/` de cada estudiante con Dockerfile, código y dependencias
-- [ ] Imagen Docker publicada de cada estudiante (Docker Hub o GitHub Packages)
-- [ ] Contenedor funcionando en su barrio asignado
-- [ ] Evidencia de escritura en La Biblioteca del Pueblo
-- [ ] Explicación del diseño elegido por cada estudiante
 
 ---
 
